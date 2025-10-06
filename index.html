@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Ryanair Board BI Dashboard</title>
+  <style>
+    :root{
+      --bg:#0b1020; --panel:#121939; --muted:#1b244a; --ink:#e8ecf8; --ink-dim:#aabbdd; --accent:#4b8bff; --good:#20c997; --warn:#ffb020; --bad:#ff6b6b; --shadow:rgba(0,0,0,.25);
+      --card-radius:18px; --pad:18px; --gap:18px; --ring:0 0 0 2px var(--accent) inset;
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0; background:linear-gradient(180deg,#0a0f1e 0%, #0d1430 100%); color:var(--ink); font:15px/1.45 var(--font)}
+    header{position:sticky; top:0; z-index:5; display:flex; align-items:center; justify-content:space-between; padding:12px var(--pad); background:rgba(12,18,40,.7); backdrop-filter: blur(10px); border-bottom:1px solid #1d274f}
+    .brand{display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.2px}
+    .logo{width:36px; height:36px; border-radius:10px; background: conic-gradient(from 180deg at 50% 50%, #4b8bff, #22d3ee, #4b8bff); box-shadow:0 8px 30px rgba(75,139,255,.35)}
+    .title{font-size:16px}
+    .controls{display:flex; align-items:center; gap:10px}
+    .btn{display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; background:var(--muted); color:var(--ink); border:1px solid #273160; cursor:pointer; transition:.2s transform,.2s background}
+    .btn:hover{transform:translateY(-1px); background:#212b58}
+    .btn .dot{width:8px; height:8px; border-radius:999px; background:var(--accent)}
+
+    main{padding:20px; max-width:1400px; margin:0 auto}
+    .grid{display:grid; gap:var(--gap)}
+    .kpis{grid-template-columns:repeat(6, minmax(0,1fr))}
+    @media (max-width:1200px){ .kpis{grid-template-columns:repeat(3,1fr)} }
+    @media (max-width:720px){ .kpis{grid-template-columns:repeat(2,1fr)} }
+
+    .card{background:linear-gradient(180deg, #141d44, #11183b); border:1px solid #233066; border-radius:var(--card-radius); padding:var(--pad); box-shadow:0 10px 30px var(--shadow)}
+    .card h3{margin:0 0 6px 0; font-size:13px; font-weight:600; color:var(--ink-dim)}
+    .metric{display:flex; align-items:baseline; gap:8px}
+    .metric .value{font-size:28px; font-weight:800}
+    .metric .delta{font-size:12px; padding:2px 8px; border-radius:999px; background:#0f1534; border:1px solid #2b3a73}
+    .delta.up{color:var(--good)}
+    .delta.down{color:var(--bad)}
+
+    .spark{height:48px; margin-top:10px}
+    .sub{font-size:12px; color:var(--ink-dim)}
+
+    .tabs{display:flex; gap:8px; margin:10px 0 20px 0; flex-wrap:wrap}
+    .tab{cursor:pointer; padding:10px 14px; border-radius:12px; background:var(--muted); border:1px solid #273160; color:var(--ink-dim)}
+    .tab.active{color:var(--ink); background:linear-gradient(180deg,#25306b,#1b264f); box-shadow:0 6px 18px rgba(0,0,0,.25), var(--ring)}
+
+    .section{display:none}
+    .section.active{display:block}
+
+    .two-col{display:grid; grid-template-columns:1.2fr .8fr; gap:var(--gap)}
+    @media (max-width:1000px){ .two-col{grid-template-columns:1fr} }
+
+    .list{display:grid; gap:12px}
+    .row{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:12px 0; border-bottom:1px dashed #2a356a}
+    .row:last-child{border-bottom:none}
+
+    .pill{display:inline-block; font-size:12px; padding:4px 10px; border-radius:999px; border:1px solid #2a356a; background:#0f1534; color:var(--ink-dim)}
+    .pill.good{color:var(--good); border-color:#2a5f54}
+    .pill.warn{color:var(--warn); border-color:#66532a}
+    .pill.bad{color:var(--bad); border-color:#6a2a2a}
+
+    table{width:100%; border-collapse:collapse; border-spacing:0}
+    th, td{padding:12px; text-align:left; border-bottom:1px solid #223060}
+    th{font-size:12px; color:var(--ink-dim); font-weight:600}
+
+    .footer{opacity:.7; font-size:12px; margin:20px 0; color:var(--ink-dim)}
+
+    .switch{position:relative; width:48px; height:28px; background:#223060; border-radius:20px; border:1px solid #2a356a; cursor:pointer}
+    .knob{position:absolute; top:3px; left:3px; width:22px; height:22px; background:#eaf0ff; border-radius:999px; box-shadow:0 3px 10px rgba(0,0,0,.3); transition:left .2s}
+    .switch.on .knob{left:23px}
+
+    /* Print styles */
+    @media print{
+      header, .tabs, .btn{display:none !important}
+      body{background:#fff; color:#111}
+      .card{border-color:#ddd; background:#fff; box-shadow:none}
+    }
+  </style>
+</head>
+<body>
+  <header aria-label="Top navigation">
+    <div class="brand" role="img" aria-label="Ryanair Board Dashboard">
+      <div class="logo"></div>
+      <div class="title">Ryanair Board BI Dashboard</div>
+    </div>
+    <div class="controls">
+      <button class="btn" id="exportBtn" aria-label="Export to PDF"><span class="dot" aria-hidden="true"></span> Export</button>
+      <button class="btn" id="printBtn" aria-label="Print view">Print</button>
+      <div class="btn" title="Live data switch" role="switch" aria-checked="true">
+        Live
+        <div class="switch on" id="liveSwitch"><div class="knob"></div></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="tabs" role="tablist" aria-label="Sections">
+      <button class="tab active" data-tab="overview" role="tab" aria-selected="true">Overview</button>
+      <button class="tab" data-tab="kpis" role="tab" aria-selected="false">KPIs</button>
+      <button class="tab" data-tab="decisions" role="tab" aria-selected="false">Decisions</button>
+      <button class="tab" data-tab="scenarios" role="tab" aria-selected="false">Scenarios</button>
+      <button class="tab" data-tab="risks" role="tab" aria-selected="false">Risks</button>
+      <button class="tab" data-tab="news" role="tab" aria-selected="false">News</button>
+    </div>
+
+    <!-- Overview -->
+    <section id="overview" class="section active">
+      <div class="grid kpis" id="kpiGrid"></div>
+      <div class="two-col" style="margin-top:18px">
+        <div class="card">
+          <h3>Executive Summary</h3>
+          <div id="execSummary" class="sub"></div>
+        </div>
+        <div class="card">
+          <h3>Profit Focus, next quarter</h3>
+          <ul id="profitFocus" class="list" style="margin:0; padding-left:18px"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- KPIs detailed -->
+    <section id="kpis" class="section">
+      <div class="card">
+        <h3>Yield and Ancillary Trends</h3>
+        <canvas id="trendChart" height="200" class="spark" aria-label="Trend chart"></canvas>
+        <div class="sub">Average fare and ancillary ARPU by quarter. Hover to inspect values.</div>
+      </div>
+      <div class="two-col" style="margin-top:18px">
+        <div class="card">
+          <h3>Network Profitability Quartiles</h3>
+          <table id="networkTable" aria-label="Route profitability">
+            <thead><tr><th>Route cohort</th><th>Cash margin</th><th>Action</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="card">
+          <h3>Fuel Hedge Ladder</h3>
+          <canvas id="hedgeChart" height="200" class="spark" aria-label="Hedge ladder"></canvas>
+          <div class="sub">Coverage and price bands by month, next 6 months.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Decisions -->
+    <section id="decisions" class="section">
+      <div class="card">
+        <h3>Board Decisions, approval matrix</h3>
+        <table id="decisionsTable" aria-label="Decisions">
+          <thead><tr><th>Decision</th><th>Owner</th><th>Why now</th><th>P&L impact</th><th>Status</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Scenarios -->
+    <section id="scenarios" class="section">
+      <div class="two-col">
+        <div class="card">
+          <h3>Scenario Controls</h3>
+          <div class="row"><div>Yield change</div><input type="range" id="yieldRange" min="-10" max="5" step="1" value="0"/> <div id="yieldVal" class="pill">0%</div></div>
+          <div class="row"><div>Fuel change (unhedged)</div><input type="range" id="fuelRange" min="0" max="20" step="1" value="0"/> <div id="fuelVal" class="pill">+$0</div></div>
+          <div class="row"><div>Ancillary ARPU change</div><input type="range" id="ancRange" min="0" max="5" step="1" value="0"/> <div id="ancVal" class="pill">+€0</div></div>
+          <div class="row"><div>Capacity redeploy</div><input type="range" id="capRange" min="0" max="5" step="1" value="0"/> <div id="capVal" class="pill">+0%</div></div>
+          <div class="sub">Adjust sliders to model EBIT deltas. Assumptions are editable in code block <code>ASSUMPTIONS</code>.</div>
+        </div>
+        <div class="card">
+          <h3>EBIT Delta, model output</h3>
+          <div id="ebitDelta" style="font-size:36px; font-weight:800; margin:4px 0 12px 0">€0</div>
+          <div id="mitigations" class="list"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Risks -->
+    <section id="risks" class="section">
+      <div class="card">
+        <h3>Risk Radar</h3>
+        <table id="riskTable" aria-label="Risk heatmap">
+          <thead><tr><th>Risk</th><th>Market</th><th>Severity</th><th>Probability</th><th>Mitigation</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- News -->
+    <section id="news" class="section">
+      <div class="card">
+        <h3>Negative sentiment tracker</h3>
+        <table id="newsTable" aria-label="Recent news">
+          <thead><tr><th>Title</th><th>Source</th><th>Date</th><th>Notes</th></tr></thead>
+          <tbody></tbody>
+        </table>
+        <div class="sub" style="margin-top:8px">Keep this fresh after each meeting. Links open in new tab.</div>
+      </div>
+    </section>
+
+    <div class="footer">This dashboard is a working tool for the Board and the Exec team. Use print button for a clean PDF.
+    </div>
+  </main>
+
+  <script>
+    // ---------------------- DATA: edit here for live values ----------------------
+    const DATA = {
+      kpis:[
+        {label:"Average fare", value:"€48.20", delta:+3.2, trend:[41,43,44,45,46,48,48.2]},
+        {label:"Ancillary ARPU", value:"€23.0", delta:+1.0, trend:[19,20,21,21.5,22,22.4,23]},
+        {label:"Load factor", value:"95%", delta:+0.4, trend:[92,93,93,94,94,95,95]},
+        {label:"Fuel hedge cover", value:"72%", delta:+5, trend:[55,58,60,63,67,70,72]},
+        {label:"Ex-fuel cost/pax", value:"€19.6", delta:-0.6, trend:[21.8,21.2,20.6,20.2,19.9,19.8,19.6]},
+        {label:"On-time performance", value:"87%", delta:+2, trend:[81,83,82,84,85,86,87]},
+      ],
+      summary: "Profit is driven by selective yield, ancillary expansion, disciplined fuel hedging and network redeploy to high margin routes.",
+      focus:[
+        "Selective +2 to +4 percent fare lift on inelastic corridors.",
+        "+€1 to +€2 ancillary ARPU through bundles and in-app offers.",
+        "Tight hedge corridor and governance. Display P&L per $5 bbl move.",
+        "Cut and redeploy capacity from Q4 losers to Q1 winners.",
+        "Automation in crew and maintenance to protect margin during disruptions."
+      ],
+      network:[
+        {cohort:"Top Quartile", margin:"€14 - €18 / pax", action:"Protect, consider +freq", class:"good"},
+        {cohort:"Q2", margin:"€8 - €13 / pax", action:"Test +price, bundle ancillaries", class:"good"},
+        {cohort:"Q3", margin:"€3 - €7 / pax", action:"Hold, prune weak rotations", class:"warn"},
+        {cohort:"Bottom Quartile", margin:"< €3 / pax", action:"Cut or re-base immediately", class:"bad"},
+      ],
+      hedge:[58,60,63,67,70,72],
+      decisions:[
+        {name:"Selective price lift (+2 to +4%)", owner:"CRO", why:"Pricing power on primaries", impact:"High", status:"Pending"},
+        {name:"Ancillary bundles and RT offers", owner:"Chief Digital", why:"€1 to €2 ARPU headroom", impact:"High", status:"In-flight"},
+        {name:"Fuel hedge corridor tighten", owner:"CFO", why:"Reduce volatility", impact:"High", status:"For Approval"},
+        {name:"Cut-and-redeploy network", owner:"COO", why:"Capacity constrained growth", impact:"High", status:"Rolling"},
+        {name:"Ops automation pilots", owner:"COO/CTO", why:"Unit cost discipline", impact:"Medium", status:"Kicking off"}
+      ],
+      risks:[
+        {risk:"ATC strikes and outages", market:"France, Greece, EU overflights", sev:"High", prob:"High", mit:"Disruption reserve, timetable buffers, crew flex"},
+        {risk:"Airport caps and charges", market:"Dublin, Germany", sev:"High", prob:"Med", mit:"Re-base options, fee negotiations"},
+        {risk:"Regulatory fines and baggage rules", market:"Spain", sev:"Med", prob:"Med", mit:"Appeal, UX clarity, comms"},
+        {risk:"Delivery cadence / fleet", market:"EU", sev:"Med", prob:"Med", mit:"Short-term leasing, defer marginal routes"},
+        {risk:"Fare softness on leisure", market:"Med/SE Europe", sev:"Med", prob:"Med", mit:"Guardrails, targeted promos off-peak"}
+      ],
+      news:[
+        {title:"Up to 600 flights a day cancelled during French strike", src:"The Guardian", date:"02 Oct 2025", url:"https://www.theguardian.com/business/2025/oct/02/up-to-600-flights-a-day-to-be-cancelled-during-french-strike-ryanair-says"},
+        {title:"Spain fines budget airlines including Ryanair", src:"The Guardian", date:"22 Nov 2024", url:"https://www.theguardian.com/business/2024/nov/22/spain-fines-budget-airlines-ryanair-179m-appeal"},
+        {title:"Night-flight cap at Dublin challenged", src:"RTÉ", date:"09 Sep 2025", url:"https://www.rte.ie/news/courts/2025/0909/1532601-ryanair-dublin-flights/"}
+      ]
+    };
+
+    // Assumptions for scenario model
+    const ASSUMPTIONS = {
+      pax: 50_000_000, // quarter passengers
+      baseFare: 48.2,  // €
+      baseAnc: 23.0,   // €
+      unhedgedFuelPct: 0.28, // proportion of fuel exposure
+      fuelCostPerPax: 16.0,  // € rough blended
+      capRedeployLiftPerPct: 0.15, // EBIT € per pax for each 1% redeploy
+      marginRate: 0.12 // EBIT as share of revenue for incremental moves
+    };
+
+    // ---------------------- RENDER HELPERS ----------------------
+    const $$ = s => document.querySelector(s);
+    const $$$ = s => document.querySelectorAll(s);
+
+    function renderKPIs(){
+      const wrap = $$('#kpiGrid');
+      wrap.innerHTML = '';
+      DATA.kpis.forEach(k =>{
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <h3>${k.label}</h3>
+          <div class="metric">
+            <div class="value">${k.value}</div>
+            <div class="delta ${k.delta>=0?'up':'down'}">${k.delta>0?'+':''}${k.delta}%</div>
+          </div>
+          <canvas class="spark" aria-hidden="true"></canvas>
+          <div class="sub">7-period trend</div>
+        `;
+        wrap.appendChild(card);
+        drawSpark(card.querySelector('canvas'), k.trend, k.delta>=0? 'up':'down');
+      });
+    }
+
+    function drawSpark(canvas, data, dir){
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width = canvas.clientWidth * devicePixelRatio;
+      const h = canvas.height = canvas.clientHeight * devicePixelRatio;
+      const pad = 10 * devicePixelRatio;
+      const min = Math.min(...data), max = Math.max(...data);
+      const xs = data.map((_,i)=> pad + i*( (w-2*pad)/(data.length-1)) );
+      const ys = data.map(v=> h - pad - ( (v-min)/(max-min||1) )*(h-2*pad));
+      ctx.clearRect(0,0,w,h);
+      // grid
+      ctx.globalAlpha = .15; ctx.strokeStyle = '#6f7db3';
+      [0.25,0.5,0.75].forEach(r=>{ctx.beginPath(); ctx.moveTo(pad, h - pad - r*(h-2*pad)); ctx.lineTo(w-pad, h - pad - r*(h-2*pad)); ctx.stroke();});
+      // line
+      ctx.globalAlpha = 1; ctx.lineWidth = 3*devicePixelRatio; ctx.strokeStyle = dir==='up'? '#20c997':'#ff6b6b';
+      ctx.beginPath(); ctx.moveTo(xs[0], ys[0]);
+      for(let i=1;i<xs.length;i++){ ctx.lineTo(xs[i], ys[i]); }
+      ctx.stroke();
+      // fill
+      const grad = ctx.createLinearGradient(0,0,0,h);
+      grad.addColorStop(0, (dir==='up')? 'rgba(32,201,151,.35)':'rgba(255,107,107,.35)');
+      grad.addColorStop(1, 'rgba(17,24,59,0)');
+      ctx.fillStyle = grad; ctx.beginPath();
+      ctx.moveTo(xs[0], h-pad); for(let i=0;i<xs.length;i++){ ctx.lineTo(xs[i], ys[i]); }
+      ctx.lineTo(xs.at(-1), h-pad); ctx.closePath(); ctx.fill();
+    }
+
+    function renderOverview(){
+      $$('#execSummary').textContent = DATA.summary;
+      const ul = $$('#profitFocus'); ul.innerHTML = '';
+      DATA.focus.forEach(x=>{ const li = document.createElement('li'); li.textContent = x; ul.appendChild(li); });
+    }
+
+    function renderNetwork(){
+      const tb = $$('#networkTable tbody'); tb.innerHTML = '';
+      DATA.network.forEach(n=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${n.cohort}</td><td>${n.margin}</td><td><span class="pill ${n.class}">${n.action}</span></td>`;
+        tb.appendChild(tr);
+      });
+    }
+
+    function renderHedge(){
+      const ctx = $$('#hedgeChart').getContext('2d');
+      const canvas = $$('#hedgeChart');
+      const w = canvas.width = canvas.clientWidth * devicePixelRatio;
+      const h = canvas.height = canvas.clientHeight * devicePixelRatio;
+      ctx.clearRect(0,0,w,h);
+      const pad = 14*devicePixelRatio; const bars = DATA.hedge; const max = 100;
+      const bw = (w - pad*2)/bars.length * 0.7; // bar width
+      bars.forEach((v,i)=>{
+        const x = pad + i*((w-2*pad)/bars.length) + 6*devicePixelRatio;
+        const barH = (v/max) * (h-2*pad);
+        ctx.fillStyle = '#4b8bff';
+        ctx.fillRect(x, h-pad-barH, bw, barH);
+        ctx.fillStyle = '#aabbdd'; ctx.font = `${12*devicePixelRatio}px ${getComputedStyle(document.body).fontFamily}`;
+        ctx.globalAlpha = .9; ctx.fillText(`${v}%`, x, h-pad-barH-6*devicePixelRatio);
+        ctx.globalAlpha = 1;
+      });
+      // axis line
+      ctx.strokeStyle = '#2a356a'; ctx.beginPath(); ctx.moveTo(pad, h-pad); ctx.lineTo(w-pad, h-pad); ctx.stroke();
+    }
+
+    function renderDecisions(){
+      const tb = $$('#decisionsTable tbody'); tb.innerHTML = '';
+      DATA.decisions.forEach(d=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${d.name}</td><td>${d.owner}</td><td>${d.why}</td><td><span class="pill">${d.impact}</span></td><td><span class="pill ${d.status==='For Approval'?'warn': d.status==='Pending'?'bad':'good'}">${d.status}</span></td>`;
+        tb.appendChild(tr);
+      });
+    }
+
+    function renderRisks(){
+      const tb = $$('#riskTable tbody'); tb.innerHTML = '';
+      DATA.risks.forEach(r=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${r.risk}</td><td>${r.market}</td><td><span class="pill ${r.sev==='High'?'bad': r.sev==='Med'?'warn':'good'}">${r.sev}</span></td><td>${r.prob}</td><td>${r.mit}</td>`;
+        tb.appendChild(tr);
+      });
+    }
+
+    function renderNews(){
+      const tb = $$('#newsTable tbody'); tb.innerHTML = '';
+      DATA.news.forEach(n=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td><a href="${n.url}" target="_blank" rel="noopener">${n.title}</a></td><td>${n.src}</td><td>${n.date}</td><td class="sub">Monitor sentiment, prepare comms</td>`;
+        tb.appendChild(tr);
+      });
+    }
+
+    // ---------------------- SCENARIO MODEL ----------------------
+    function fmtEUR(x){
+      return '€' + x.toLocaleString(undefined,{maximumFractionDigits:0});
+    }
+    function updateScenario(){
+      const y = Number($$('#yieldRange').value); // percent change
+      const f = Number($$('#fuelRange').value);  // $ per bbl increase
+      const a = Number($$('#ancRange').value);   // € per pax increase
+      const c = Number($$('#capRange').value);   // percent redeploy
+      $$('#yieldVal').textContent = `${y}%`;
+      $$('#fuelVal').textContent = `+$${f}`;
+      $$('#ancVal').textContent = `+€${a}`;
+      $$('#capVal').textContent = `+${c}%`;
+
+      const revFare = ASSUMPTIONS.pax * ASSUMPTIONS.baseFare * (y/100);
+      const revAnc  = ASSUMPTIONS.pax * a;
+      const fuelHit = ASSUMPTIONS.pax * ASSUMPTIONS.fuelCostPerPax * ASSUMPTIONS.unhedgedFuelPct * (f/100); // rough approximation
+      const capLift = ASSUMPTIONS.pax * (c/100) * ASSUMPTIONS.capRedeployLiftPerPct;
+
+      // EBIT delta: margin on revenue changes minus cost headwinds
+      const ebit = (revFare + revAnc) * ASSUMPTIONS.marginRate + capLift - fuelHit;
+      $$('#ebitDelta').textContent = fmtEUR(ebit);
+
+      const mit = $$('#mitigations'); mit.innerHTML = '';
+      const bullets = [
+        y<0? 'Tighten promos to off-peak only' : 'Apply guardrails to protect load factor',
+        a>0? 'Push bundles and in-app offers' : 'Enable cross-sell tests to find +€1 headroom',
+        f>0? 'Top-up hedges within corridor and add schedule buffers' : 'Maintain corridor discipline',
+        c>0? 'Redeploy aircraft to Q1 winners and cut bottom quartile routes' : 'Keep redeploy shortlist warm'
+      ];
+      bullets.forEach(b=>{ const div = document.createElement('div'); div.className='row'; div.textContent=b; mit.appendChild(div); });
+    }
+
+    // ---------------------- EVENTS ----------------------
+    $$$('.tab').forEach(t=> t.addEventListener('click', e=>{
+      $$$('.tab').forEach(x=>{x.classList.remove('active'); x.setAttribute('aria-selected','false')});
+      t.classList.add('active'); t.setAttribute('aria-selected','true');
+      $$$('.section').forEach(s=> s.classList.remove('active'));
+      $$('#'+t.dataset.tab).classList.add('active');
+    }));
+
+    $$('#printBtn').addEventListener('click', ()=> window.print());
+    $$('#exportBtn').addEventListener('click', ()=> window.print());
+    $$('#liveSwitch').addEventListener('click', (e)=> e.currentTarget.classList.toggle('on'));
+
+    ['yieldRange','fuelRange','ancRange','capRange'].forEach(id=>{
+      $$('#'+id).addEventListener('input', updateScenario);
+    });
+
+    // ---------------------- INIT ----------------------
+    renderKPIs();
+    renderOverview();
+    renderNetwork();
+    renderHedge();
+    renderDecisions();
+    renderRisks();
+    renderNews();
+    updateScenario();
+  </script>
+</body>
+</html>
