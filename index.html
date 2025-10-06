@@ -96,6 +96,32 @@
     .priority-metric{font-size:24px; font-weight:800; color:var(--ryanair-blue); margin-bottom:6px}
     .priority-desc{font-size:12px; color:var(--ink-dim); line-height:1.4}
 
+    .insight-card{background:#FFFFFF; border:2px solid #E9ECEF; border-radius:12px; padding:28px; margin-bottom:20px; display:flex; gap:24px; align-items:flex-start; transition:.3s all}
+    .insight-card:hover{box-shadow:0 8px 24px rgba(7,53,144,.12); border-color:#F1C933}
+    .insight-number{width:60px; height:60px; border-radius:50%; background:linear-gradient(135deg, #F1C933 0%, #FFD54F 100%); color:#073590; font-size:32px; font-weight:900; display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 4px 12px rgba(241,201,51,.3)}
+    .insight-content{flex:1}
+    .insight-title{margin:0 0 16px 0; font-size:20px; font-weight:700; color:var(--ryanair-blue); line-height:1.3}
+    .insight-metrics{display:flex; gap:16px; margin-bottom:16px; flex-wrap:wrap}
+    .insight-metric-box{background:#F8F9FA; border:2px solid #E9ECEF; border-radius:8px; padding:12px 16px; min-width:140px; flex:1}
+    .insight-metric-box.highlight{background:#FFF9E6; border-color:#F1C933}
+    .insight-metric-box.good{background:#D4EDDA; border-color:#28A745}
+    .insight-metric-box.bad{background:#F8D7DA; border-color:#DC3545}
+    .insight-metric-value{font-size:24px; font-weight:800; color:var(--ryanair-blue); margin-bottom:4px}
+    .insight-metric-box.good .insight-metric-value{color:#28A745}
+    .insight-metric-box.bad .insight-metric-value{color:#DC3545}
+    .insight-metric-label{font-size:11px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:0.5px; font-weight:600}
+    .insight-text{margin:0 0 12px 0; color:var(--ink); line-height:1.6; font-size:15px}
+    .insight-tag{display:inline-block; padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:0.5px}
+    .insight-tag.good{background:#D4EDDA; color:#28A745; border:2px solid #28A745}
+    .insight-tag.warn{background:#FFF3CD; color:#856404; border:2px solid #FFC107}
+    .insight-tag.bad{background:#F8D7DA; color:#DC3545; border:2px solid #DC3545}
+
+    @media (max-width:900px){
+      .insight-card{flex-direction:column}
+      .insight-metrics{flex-direction:column}
+      .insight-metric-box{min-width:100%}
+    }
+
     /* Print styles */
     @media print{
       header, .tabs, .btn{display:none !important}
@@ -123,6 +149,7 @@
   <main>
     <div class="tabs" role="tablist" aria-label="Sections">
       <button class="tab active" data-tab="executive" role="tab" aria-selected="true">Executive Overview</button>
+      <button class="tab" data-tab="insights" role="tab" aria-selected="false">Board Insights</button>
       <button class="tab" data-tab="overview" role="tab" aria-selected="false">Overview</button>
       <button class="tab" data-tab="kpis" role="tab" aria-selected="false">KPIs</button>
       <button class="tab" data-tab="decisions" role="tab" aria-selected="false">Decisions</button>
@@ -211,6 +238,141 @@
             <div class="priority-desc">Cut & redeploy to winners</div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <!-- Board Insights - Q3 2025 Key Takeaways -->
+    <section id="insights" class="section">
+      <div class="card" style="background:linear-gradient(135deg, #073590 0%, #1E5AA8 100%); color:#FFF; padding:24px; margin-bottom:24px">
+        <h2 style="margin:0 0 8px 0; font-size:28px; font-weight:800">Q3 2025 Board Insights</h2>
+        <p style="margin:0; font-size:16px; opacity:0.95">Five profit-focused, decision-relevant insights from Q1 FY2026 performance</p>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-number">1</div>
+        <div class="insight-content">
+          <h3 class="insight-title">Profit Rebound and Yield Strength</h3>
+          <div class="insight-metrics">
+            <div class="insight-metric-box">
+              <div class="insight-metric-value">€820M</div>
+              <div class="insight-metric-label">Q1 FY2026 Profit</div>
+            </div>
+            <div class="insight-metric-box">
+              <div class="insight-metric-value">+128%</div>
+              <div class="insight-metric-label">vs Prior Year</div>
+            </div>
+            <div class="insight-metric-box">
+              <div class="insight-metric-value">+21%</div>
+              <div class="insight-metric-label">Average Fare Increase</div>
+            </div>
+          </div>
+          <p class="insight-text">Ryanair delivered <strong>€820M profit in Q1 FY2026</strong>, more than double the prior year (+128%), driven by a <strong>21% increase in average fares</strong> and strong ancillary sales. This reverses last year's fare softness and puts the airline back on a clear growth path.</p>
+          <div class="insight-tag good">✓ Growth Path Restored</div>
+        </div>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-number">2</div>
+        <div class="insight-content">
+          <h3 class="insight-title">Cost Leadership Secured by Fuel Hedging</h3>
+          <div class="insight-metrics">
+            <div class="insight-metric-box">
+              <div class="insight-metric-value">+5%</div>
+              <div class="insight-metric-label">Operating Cost Growth</div>
+            </div>
+            <div class="insight-metric-box">
+              <div class="insight-metric-value">~1%</div>
+              <div class="insight-metric-label">Unit Cost Ex-Fuel Rise</div>
+            </div>
+            <div class="insight-metric-box">
+              <div class="insight-metric-value">85%</div>
+              <div class="insight-metric-label">FY2026 Hedged @ $76/bbl</div>
+            </div>
+          </div>
+          <p class="insight-text">Operating costs rose just <strong>+5%</strong> despite traffic growth, with <strong>unit costs ex-fuel up only ~1%</strong>. Crucially, <strong>85% of FY2026 fuel needs are hedged at ~$76/bbl</strong>, far below spot prices, insulating Ryanair from volatility and giving it a <strong>cost edge over competitors</strong> like easyJet and Wizz.</p>
+          <div class="insight-tag good">✓ Competitive Advantage</div>
+        </div>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-number">3</div>
+        <div class="insight-content">
+          <h3 class="insight-title">Core Markets Drive Half of Revenue</h3>
+          <div class="insight-metrics">
+            <div class="insight-metric-box">
+              <div class="insight-metric-value">>50%</div>
+              <div class="insight-metric-label">Italy, Spain, UK Revenue</div>
+            </div>
+            <div class="insight-metric-box">
+              <div class="insight-metric-value">€2.48B</div>
+              <div class="insight-metric-label">Italy Revenue YTD</div>
+            </div>
+            <div class="insight-metric-box">
+              <div class="insight-metric-value">120</div>
+              <div class="insight-metric-label">Routes from Milan (31 based)</div>
+            </div>
+          </div>
+          <p class="insight-text">Italy, Spain, and the UK generate <strong>over 50% of total revenue</strong> (Italy alone €2.48B YTD). <strong>Italy is a standout:</strong> Ryanair is now the largest airline there, with <strong>31 aircraft based in Milan and 120 routes</strong>. Policy support (e.g. reduced regional taxes) is enabling high-margin growth, but any reversal would be a risk.</p>
+          <div class="insight-tag warn">⚠ Policy Dependency Risk</div>
+        </div>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-number">4</div>
+        <div class="insight-content">
+          <h3 class="insight-title">Targeted Network Optimization</h3>
+          <div class="insight-metrics">
+            <div class="insight-metric-box highlight">
+              <div class="insight-metric-value">Picky</div>
+              <div class="insight-metric-label">Capacity Allocation</div>
+            </div>
+            <div class="insight-metric-box bad">
+              <div class="insight-metric-value">Spain ↓</div>
+              <div class="insight-metric-label">Trimming (AENA charges)</div>
+            </div>
+            <div class="insight-metric-box good">
+              <div class="insight-metric-value">IT/PL/EE ↑</div>
+              <div class="insight-metric-label">Expanding High-Margin</div>
+            </div>
+          </div>
+          <p class="insight-text">With Boeing delivery delays limiting fleet growth, Ryanair is being <strong>"picky"</strong> with capacity allocation: trimming unprofitable Spain routes (due to AENA charges), closing Denmark bases (new taxes), while aggressively expanding in <strong>Italy, Poland, and Eastern Europe</strong> where governments incentivize traffic. This strategy is improving yield quality and ensuring aircraft are deployed where margins are highest.</p>
+          <div class="insight-tag good">✓ Margin Quality Focus</div>
+        </div>
+      </div>
+
+      <div class="insight-card">
+        <div class="insight-number">5</div>
+        <div class="insight-content">
+          <h3 class="insight-title">Competitor Weakness = Opportunity</h3>
+          <div class="insight-metrics">
+            <div class="insight-metric-box bad">
+              <div class="insight-metric-value">-42%</div>
+              <div class="insight-metric-label">Wizz Air Profit (20% fleet grounded)</div>
+            </div>
+            <div class="insight-metric-box bad">
+              <div class="insight-metric-value">€25M</div>
+              <div class="insight-metric-label">easyJet ATC Strike Hit</div>
+            </div>
+            <div class="insight-metric-box good">
+              <div class="insight-metric-value">Strong</div>
+              <div class="insight-metric-label">Ryanair Load Factor Resilience</div>
+            </div>
+          </div>
+          <p class="insight-text"><strong>Wizz Air:</strong> Grounded 20% of fleet from engine issues, profit down 42%. This weakens them in Central/Eastern Europe where Ryanair is moving in. <strong>easyJet:</strong> Facing higher fuel costs and ATC strike disruption (€25M hit in July), plus later booking trends that reduce pricing certainty. Ryanair's <strong>cost leadership, fuel hedge, and load factor resilience</strong> give it the ability to consolidate share while rivals struggle.</p>
+          <div class="insight-tag good">✓ Market Share Opportunity</div>
+        </div>
+      </div>
+
+      <div class="card" style="background:#FFF9E6; border:2px solid #F1C933; margin-top:24px; padding:20px">
+        <h3 style="color:#073590; margin:0 0 12px 0; font-size:18px">⚖️ Board Takeaway</h3>
+        <p style="margin:0; color:#073590; line-height:1.6; font-size:15px">
+          Ryanair enters Q3 2025 in a position of <strong>unusual strength</strong>: record profitability, unmatched cost leadership, and competitor weakness. The most critical levers are:
+        </p>
+        <ul style="margin:12px 0 0 0; padding-left:24px; color:#073590">
+          <li><strong>(a)</strong> Protecting the cost edge via fuel hedging and fleet efficiency</li>
+          <li><strong>(b)</strong> Prioritising growth in Italy, Poland, and Eastern Europe</li>
+          <li><strong>(c)</strong> Ruthless pruning of low-yield markets like Spain and Denmark</li>
+        </ul>
       </div>
     </section>
 
