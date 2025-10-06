@@ -83,6 +83,19 @@
       width:20px; height:20px; border-radius:50%; background:var(--ryanair-yellow); cursor:pointer; border:2px solid var(--ryanair-blue);
     }
 
+    .stat-box{text-align:center; padding:16px; background:#F8F9FA; border-radius:8px; border:2px solid #E9ECEF}
+    .stat-label{font-size:11px; color:var(--ink-dim); font-weight:600; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px}
+    .stat-value{font-size:32px; font-weight:800; color:var(--ryanair-blue); margin:4px 0}
+    .stat-delta{font-size:12px; font-weight:600; margin-top:4px}
+    .stat-delta.up{color:var(--good)}
+
+    .priority-card{text-align:center; padding:20px; background:#F8F9FA; border-radius:8px; border:2px solid #E9ECEF; transition:.2s all}
+    .priority-card:hover{transform:translateY(-4px); box-shadow:0 8px 20px rgba(7,53,144,.15)}
+    .priority-icon{width:60px; height:60px; border-radius:50%; margin:0 auto 12px; display:flex; align-items:center; justify-content:center; font-size:28px}
+    .priority-title{font-size:13px; font-weight:700; color:var(--ryanair-blue); text-transform:uppercase; letter-spacing:0.5px; margin-bottom:8px}
+    .priority-metric{font-size:24px; font-weight:800; color:var(--ryanair-blue); margin-bottom:6px}
+    .priority-desc{font-size:12px; color:var(--ink-dim); line-height:1.4}
+
     /* Print styles */
     @media print{
       header, .tabs, .btn{display:none !important}
@@ -109,7 +122,8 @@
 
   <main>
     <div class="tabs" role="tablist" aria-label="Sections">
-      <button class="tab active" data-tab="overview" role="tab" aria-selected="true">Overview</button>
+      <button class="tab active" data-tab="executive" role="tab" aria-selected="true">Executive Overview</button>
+      <button class="tab" data-tab="overview" role="tab" aria-selected="false">Overview</button>
       <button class="tab" data-tab="kpis" role="tab" aria-selected="false">KPIs</button>
       <button class="tab" data-tab="decisions" role="tab" aria-selected="false">Decisions</button>
       <button class="tab" data-tab="scenarios" role="tab" aria-selected="false">Scenarios</button>
@@ -117,8 +131,91 @@
       <button class="tab" data-tab="news" role="tab" aria-selected="false">News</button>
     </div>
 
+    <!-- Executive Overview - Rich Picture Dashboard -->
+    <section id="executive" class="section active">
+      <div class="grid kpis" id="execKpiGrid"></div>
+      
+      <div class="two-col" style="margin-top:18px">
+        <div class="card">
+          <h3>Performance at a Glance</h3>
+          <canvas id="performanceRadar" height="280" aria-label="Performance radar chart"></canvas>
+          <div class="sub">Six key dimensions: Yield, Load, Ancillary, Cost Control, On-time, Fuel Hedge</div>
+        </div>
+        <div class="card">
+          <h3>Revenue Mix Evolution</h3>
+          <canvas id="revenueMix" height="280" aria-label="Revenue composition"></canvas>
+          <div class="sub">Quarterly revenue breakdown: Fares vs. Ancillary vs. Other</div>
+        </div>
+      </div>
+
+      <div class="two-col" style="margin-top:18px">
+        <div class="card">
+          <h3>Fleet & Network Health</h3>
+          <div class="grid" style="grid-template-columns:1fr 1fr; gap:16px; margin-top:12px">
+            <div class="stat-box">
+              <div class="stat-label">Active Aircraft</div>
+              <div class="stat-value" id="fleetCount">578</div>
+              <div class="stat-delta up">+12 vs Q3</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Routes Operated</div>
+              <div class="stat-value" id="routeCount">2,400</div>
+              <div class="stat-delta up">+35 new</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Passengers (Q)</div>
+              <div class="stat-value" id="paxCount">50.2M</div>
+              <div class="stat-delta up">+7.3%</div>
+            </div>
+            <div class="stat-box">
+              <div class="stat-label">Avg Sector Length</div>
+              <div class="stat-value" id="sectorLength">1,245km</div>
+              <div class="stat-delta">+18km</div>
+            </div>
+          </div>
+          <canvas id="networkMap" height="160" style="margin-top:16px" aria-label="Network visualization"></canvas>
+        </div>
+        
+        <div class="card">
+          <h3>Profit Bridge (€M)</h3>
+          <canvas id="profitBridge" height="300" aria-label="Profit waterfall"></canvas>
+          <div class="sub">Waterfall from prior quarter to current EBIT forecast</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:18px">
+        <h3>Key Strategic Priorities</h3>
+        <div class="grid" style="grid-template-columns:repeat(4, 1fr); gap:16px; margin-top:12px">
+          <div class="priority-card">
+            <div class="priority-icon" style="background:#28A745">💰</div>
+            <div class="priority-title">Yield Growth</div>
+            <div class="priority-metric">+3.2%</div>
+            <div class="priority-desc">Selective pricing on primary routes</div>
+          </div>
+          <div class="priority-card">
+            <div class="priority-icon" style="background:#F1C933">🛍️</div>
+            <div class="priority-title">Ancillary Push</div>
+            <div class="priority-metric">€23.0 ARPU</div>
+            <div class="priority-desc">Bundles & digital offers expansion</div>
+          </div>
+          <div class="priority-card">
+            <div class="priority-icon" style="background:#073590">⛽</div>
+            <div class="priority-title">Fuel Discipline</div>
+            <div class="priority-metric">72% hedged</div>
+            <div class="priority-desc">Corridor governance & coverage</div>
+          </div>
+          <div class="priority-card">
+            <div class="priority-icon" style="background:#DC3545">✂️</div>
+            <div class="priority-title">Network Optimize</div>
+            <div class="priority-metric">Bottom 10%</div>
+            <div class="priority-desc">Cut & redeploy to winners</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- Overview -->
-    <section id="overview" class="section active">
+    <section id="overview" class="section">
       <div class="grid kpis" id="kpiGrid"></div>
       <div class="two-col" style="margin-top:18px">
         <div class="card">
@@ -432,7 +529,267 @@
       $$('#'+id).addEventListener('input', updateScenario);
     });
 
+    // ---------------------- EXECUTIVE OVERVIEW CHARTS ----------------------
+    function renderExecKPIs(){
+      const wrap = $$('#execKpiGrid');
+      wrap.innerHTML = '';
+      const highlights = [
+        {label:"Revenue/Pax", value:"€71.20", delta:+4.1, trend:[62,65,67,68,69,70,71.2]},
+        {label:"EBIT Margin", value:"18.5%", delta:+1.2, trend:[15,15.5,16,16.8,17.5,18,18.5]},
+        {label:"Load Factor", value:"95%", delta:+0.4, trend:[92,93,93,94,94,95,95]},
+        {label:"Unit Cost", value:"€32.8", delta:-1.8, trend:[36,35.5,35,34.2,33.5,33,32.8]},
+        {label:"Punctuality", value:"87%", delta:+2, trend:[81,83,82,84,85,86,87]},
+        {label:"Fleet Util.", value:"12.1h", delta:+0.3, trend:[11.2,11.4,11.6,11.8,11.9,12,12.1]},
+      ];
+      highlights.forEach(k =>{
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <h3>${k.label}</h3>
+          <div class="metric">
+            <div class="value">${k.value}</div>
+            <div class="delta ${k.delta>=0?'up':'down'}">${k.delta>0?'+':''}${k.delta}%</div>
+          </div>
+          <canvas class="spark" aria-hidden="true"></canvas>
+        `;
+        wrap.appendChild(card);
+        drawSpark(card.querySelector('canvas'), k.trend, k.delta>=0? 'up':'down');
+      });
+    }
+
+    function renderPerformanceRadar(){
+      const canvas = $$('#performanceRadar');
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width = canvas.clientWidth * devicePixelRatio;
+      const h = canvas.height = canvas.clientHeight * devicePixelRatio;
+      ctx.clearRect(0,0,w,h);
+      
+      const centerX = w/2, centerY = h/2;
+      const radius = Math.min(w,h)/2 - 40*devicePixelRatio;
+      const metrics = [
+        {label:'Yield', value:0.85},
+        {label:'Load', value:0.95},
+        {label:'Ancillary', value:0.78},
+        {label:'Cost', value:0.88},
+        {label:'On-time', value:0.87},
+        {label:'Hedge', value:0.72}
+      ];
+      
+      // Grid circles
+      ctx.strokeStyle = '#E9ECEF'; ctx.lineWidth = 1*devicePixelRatio;
+      [0.2,0.4,0.6,0.8,1].forEach(r=>{
+        ctx.beginPath();
+        ctx.arc(centerX, centerY, radius*r, 0, Math.PI*2);
+        ctx.stroke();
+      });
+      
+      // Axes
+      ctx.strokeStyle = '#DEE2E6';
+      metrics.forEach((_,i)=>{
+        const angle = (i/metrics.length) * Math.PI * 2 - Math.PI/2;
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(centerX + Math.cos(angle)*radius, centerY + Math.sin(angle)*radius);
+        ctx.stroke();
+      });
+      
+      // Data polygon
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba(241,201,51,0.3)';
+      ctx.strokeStyle = '#F1C933';
+      ctx.lineWidth = 3*devicePixelRatio;
+      metrics.forEach((m,i)=>{
+        const angle = (i/metrics.length) * Math.PI * 2 - Math.PI/2;
+        const r = radius * m.value;
+        const x = centerX + Math.cos(angle)*r;
+        const y = centerY + Math.sin(angle)*r;
+        if(i===0) ctx.moveTo(x,y);
+        else ctx.lineTo(x,y);
+      });
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+      
+      // Labels
+      ctx.fillStyle = '#073590';
+      ctx.font = `${12*devicePixelRatio}px ${getComputedStyle(document.body).fontFamily}`;
+      ctx.textAlign = 'center';
+      metrics.forEach((m,i)=>{
+        const angle = (i/metrics.length) * Math.PI * 2 - Math.PI/2;
+        const labelR = radius + 20*devicePixelRatio;
+        const x = centerX + Math.cos(angle)*labelR;
+        const y = centerY + Math.sin(angle)*labelR;
+        ctx.fillText(m.label, x, y);
+      });
+    }
+
+    function renderRevenueMix(){
+      const canvas = $$('#revenueMix');
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width = canvas.clientWidth * devicePixelRatio;
+      const h = canvas.height = canvas.clientHeight * devicePixelRatio;
+      ctx.clearRect(0,0,w,h);
+      
+      const quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
+      const fares = [2100, 2250, 2400, 2520];
+      const ancillary = [950, 1050, 1150, 1200];
+      const other = [120, 130, 140, 150];
+      
+      const pad = 40*devicePixelRatio;
+      const barWidth = (w - pad*2) / quarters.length * 0.6;
+      const maxVal = 4000;
+      
+      quarters.forEach((q,i)=>{
+        const x = pad + i*((w-pad*2)/quarters.length) + 20*devicePixelRatio;
+        const total = fares[i] + ancillary[i] + other[i];
+        
+        const fareH = (fares[i]/maxVal) * (h-pad*2);
+        const ancH = (ancillary[i]/maxVal) * (h-pad*2);
+        const otherH = (other[i]/maxVal) * (h-pad*2);
+        
+        // Fares (blue)
+        ctx.fillStyle = '#073590';
+        ctx.fillRect(x, h-pad-fareH, barWidth, fareH);
+        
+        // Ancillary (yellow)
+        ctx.fillStyle = '#F1C933';
+        ctx.fillRect(x, h-pad-fareH-ancH, barWidth, ancH);
+        
+        // Other (gray)
+        ctx.fillStyle = '#6C757D';
+        ctx.fillRect(x, h-pad-fareH-ancH-otherH, barWidth, otherH);
+        
+        // Quarter label
+        ctx.fillStyle = '#073590';
+        ctx.font = `${12*devicePixelRatio}px ${getComputedStyle(document.body).fontFamily}`;
+        ctx.textAlign = 'center';
+        ctx.fillText(q, x + barWidth/2, h-pad+20*devicePixelRatio);
+      });
+      
+      // Legend
+      const legendY = 20*devicePixelRatio;
+      ctx.fillStyle = '#073590'; ctx.fillRect(w-180*devicePixelRatio, legendY, 15*devicePixelRatio, 15*devicePixelRatio);
+      ctx.fillStyle = '#073590'; ctx.fillText('Fares', w-150*devicePixelRatio, legendY+12*devicePixelRatio);
+      ctx.fillStyle = '#F1C933'; ctx.fillRect(w-100*devicePixelRatio, legendY, 15*devicePixelRatio, 15*devicePixelRatio);
+      ctx.fillStyle = '#073590'; ctx.fillText('Ancillary', w-70*devicePixelRatio, legendY+12*devicePixelRatio);
+    }
+
+    function renderNetworkMap(){
+      const canvas = $$('#networkMap');
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width = canvas.clientWidth * devicePixelRatio;
+      const h = canvas.height = canvas.clientHeight * devicePixelRatio;
+      ctx.clearRect(0,0,w,h);
+      
+      // Simplified network visualization - dots representing bases/airports
+      const bases = [
+        {x:0.2, y:0.6, size:20, label:'DUB'},
+        {x:0.35, y:0.4, size:18, label:'STN'},
+        {x:0.45, y:0.5, size:16, label:'BCN'},
+        {x:0.5, y:0.35, size:15, label:'BER'},
+        {x:0.6, y:0.55, size:14, label:'FCO'},
+        {x:0.7, y:0.45, size:13, label:'WAW'},
+        {x:0.4, y:0.7, size:12, label:'MAD'},
+        {x:0.55, y:0.65, size:11, label:'ATH'}
+      ];
+      
+      // Connection lines
+      ctx.strokeStyle = 'rgba(241,201,51,0.2)';
+      ctx.lineWidth = 1*devicePixelRatio;
+      for(let i=0; i<bases.length; i++){
+        for(let j=i+1; j<bases.length; j++){
+          if(Math.random()>0.6){
+            ctx.beginPath();
+            ctx.moveTo(bases[i].x*w, bases[i].y*h);
+            ctx.lineTo(bases[j].x*w, bases[j].y*h);
+            ctx.stroke();
+          }
+        }
+      }
+      
+      // Base dots
+      bases.forEach(b=>{
+        ctx.fillStyle = '#073590';
+        ctx.beginPath();
+        ctx.arc(b.x*w, b.y*h, b.size*devicePixelRatio/2, 0, Math.PI*2);
+        ctx.fill();
+        
+        ctx.fillStyle = '#F1C933';
+        ctx.font = `${10*devicePixelRatio}px ${getComputedStyle(document.body).fontFamily}`;
+        ctx.textAlign = 'center';
+        ctx.fillText(b.label, b.x*w, b.y*h - b.size*devicePixelRatio/2 - 5*devicePixelRatio);
+      });
+    }
+
+    function renderProfitBridge(){
+      const canvas = $$('#profitBridge');
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width = canvas.clientWidth * devicePixelRatio;
+      const h = canvas.height = canvas.clientHeight * devicePixelRatio;
+      ctx.clearRect(0,0,w,h);
+      
+      const items = [
+        {label:'Q3 EBIT', value:820, type:'base'},
+        {label:'Yield ↑', value:120, type:'positive'},
+        {label:'Ancillary ↑', value:85, type:'positive'},
+        {label:'Volume ↑', value:65, type:'positive'},
+        {label:'Fuel ↓', value:-45, type:'negative'},
+        {label:'Costs ↓', value:-35, type:'negative'},
+        {label:'Q4 EBIT', value:1010, type:'total'}
+      ];
+      
+      const pad = 30*devicePixelRatio;
+      const barW = (w - pad*2) / items.length * 0.7;
+      const maxVal = 1200;
+      let runningTotal = 0;
+      
+      items.forEach((item,i)=>{
+        const x = pad + i*((w-pad*2)/items.length);
+        let barH, barY;
+        
+        if(item.type === 'base' || item.type === 'total'){
+          barH = (item.value/maxVal) * (h-pad*2);
+          barY = h - pad - barH;
+          ctx.fillStyle = item.type === 'total' ? '#28A745' : '#073590';
+          runningTotal = item.value;
+        } else {
+          const absVal = Math.abs(item.value);
+          barH = (absVal/maxVal) * (h-pad*2);
+          if(item.type === 'positive'){
+            barY = h - pad - (runningTotal/maxVal)*(h-pad*2) - barH;
+            ctx.fillStyle = '#F1C933';
+            runningTotal += item.value;
+          } else {
+            barY = h - pad - (runningTotal/maxVal)*(h-pad*2);
+            ctx.fillStyle = '#DC3545';
+            runningTotal += item.value;
+          }
+        }
+        
+        ctx.fillRect(x, barY, barW, barH);
+        
+        // Label
+        ctx.fillStyle = '#073590';
+        ctx.font = `${10*devicePixelRatio}px ${getComputedStyle(document.body).fontFamily}`;
+        ctx.textAlign = 'center';
+        ctx.save();
+        ctx.translate(x + barW/2, h-5*devicePixelRatio);
+        ctx.rotate(-Math.PI/4);
+        ctx.fillText(item.label, 0, 0);
+        ctx.restore();
+        
+        // Value on bar
+        ctx.fillStyle = '#FFF';
+        ctx.fillText('€'+Math.abs(item.value)+'M', x + barW/2, barY + barH/2);
+      });
+    }
+
     // ---------------------- INIT ----------------------
+    renderExecKPIs();
+    renderPerformanceRadar();
+    renderRevenueMix();
+    renderNetworkMap();
+    renderProfitBridge();
     renderKPIs();
     renderOverview();
     renderNetwork();
