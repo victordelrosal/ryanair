@@ -6,21 +6,22 @@
   <title>Ryanair Board BI Dashboard</title>
   <style>
     :root{
-      --bg:#0b1020; --panel:#121939; --muted:#1b244a; --ink:#e8ecf8; --ink-dim:#aabbdd; --accent:#4b8bff; --good:#20c997; --warn:#ffb020; --bad:#ff6b6b; --shadow:rgba(0,0,0,.25);
-      --card-radius:18px; --pad:18px; --gap:18px; --ring:0 0 0 2px var(--accent) inset;
-      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      --ryanair-blue:#073590; --ryanair-yellow:#F1C933; --ryanair-light-blue:#1E5AA8; --ryanair-dark-blue:#041F50;
+      --bg:#FFFFFF; --panel:#F8F9FA; --muted:#E9ECEF; --ink:#073590; --ink-dim:#5A7BA6; --accent:#F1C933; --good:#28A745; --warn:#FFC107; --bad:#DC3545; --shadow:rgba(7,53,144,.15);
+      --card-radius:8px; --pad:18px; --gap:18px; --ring:0 0 0 3px var(--accent) inset;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
-    body{margin:0; background:linear-gradient(180deg,#0a0f1e 0%, #0d1430 100%); color:var(--ink); font:15px/1.45 var(--font)}
-    header{position:sticky; top:0; z-index:5; display:flex; align-items:center; justify-content:space-between; padding:12px var(--pad); background:rgba(12,18,40,.7); backdrop-filter: blur(10px); border-bottom:1px solid #1d274f}
-    .brand{display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.2px}
-    .logo{width:36px; height:36px; border-radius:10px; background: conic-gradient(from 180deg at 50% 50%, #4b8bff, #22d3ee, #4b8bff); box-shadow:0 8px 30px rgba(75,139,255,.35)}
-    .title{font-size:16px}
+    body{margin:0; background:#FFFFFF; color:var(--ink); font:15px/1.45 var(--font)}
+    header{position:sticky; top:0; z-index:5; display:flex; align-items:center; justify-content:space-between; padding:16px var(--pad); background:var(--ryanair-blue); backdrop-filter: blur(10px); border-bottom:3px solid var(--ryanair-yellow)}
+    .brand{display:flex; align-items:center; gap:12px; font-weight:700; letter-spacing:.5px; color:#FFFFFF}
+    .logo{width:40px; height:40px; border-radius:4px; background: var(--ryanair-yellow); box-shadow:0 4px 12px rgba(241,201,51,.4); display:flex; align-items:center; justify-content:center; font-weight:900; font-size:20px; color:var(--ryanair-blue)}
+    .title{font-size:18px; color:#FFFFFF}
     .controls{display:flex; align-items:center; gap:10px}
-    .btn{display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; background:var(--muted); color:var(--ink); border:1px solid #273160; cursor:pointer; transition:.2s transform,.2s background}
-    .btn:hover{transform:translateY(-1px); background:#212b58}
-    .btn .dot{width:8px; height:8px; border-radius:999px; background:var(--accent)}
+    .btn{display:inline-flex; align-items:center; gap:8px; padding:10px 16px; border-radius:4px; background:var(--ryanair-yellow); color:var(--ryanair-blue); border:none; cursor:pointer; transition:.2s all; font-weight:600}
+    .btn:hover{transform:translateY(-2px); background:#FFD54F; box-shadow:0 4px 12px rgba(241,201,51,.5)}
+    .btn .dot{width:8px; height:8px; border-radius:999px; background:var(--ryanair-blue)}
 
     main{padding:20px; max-width:1400px; margin:0 auto}
     .grid{display:grid; gap:var(--gap)}
@@ -28,20 +29,21 @@
     @media (max-width:1200px){ .kpis{grid-template-columns:repeat(3,1fr)} }
     @media (max-width:720px){ .kpis{grid-template-columns:repeat(2,1fr)} }
 
-    .card{background:linear-gradient(180deg, #141d44, #11183b); border:1px solid #233066; border-radius:var(--card-radius); padding:var(--pad); box-shadow:0 10px 30px var(--shadow)}
-    .card h3{margin:0 0 6px 0; font-size:13px; font-weight:600; color:var(--ink-dim)}
+    .card{background:#FFFFFF; border:2px solid #E9ECEF; border-radius:var(--card-radius); padding:var(--pad); box-shadow:0 2px 8px var(--shadow)}
+    .card h3{margin:0 0 10px 0; font-size:14px; font-weight:700; color:var(--ryanair-blue); text-transform:uppercase; letter-spacing:0.5px}
     .metric{display:flex; align-items:baseline; gap:8px}
-    .metric .value{font-size:28px; font-weight:800}
-    .metric .delta{font-size:12px; padding:2px 8px; border-radius:999px; background:#0f1534; border:1px solid #2b3a73}
-    .delta.up{color:var(--good)}
-    .delta.down{color:var(--bad)}
+    .metric .value{font-size:32px; font-weight:800; color:var(--ryanair-blue)}
+    .metric .delta{font-size:12px; padding:3px 10px; border-radius:4px; background:#F8F9FA; border:1px solid #DEE2E6; font-weight:600}
+    .delta.up{color:var(--good); background:#D4EDDA; border-color:var(--good)}
+    .delta.down{color:var(--bad); background:#F8D7DA; border-color:var(--bad)}
 
     .spark{height:48px; margin-top:10px}
     .sub{font-size:12px; color:var(--ink-dim)}
 
     .tabs{display:flex; gap:8px; margin:10px 0 20px 0; flex-wrap:wrap}
-    .tab{cursor:pointer; padding:10px 14px; border-radius:12px; background:var(--muted); border:1px solid #273160; color:var(--ink-dim)}
-    .tab.active{color:var(--ink); background:linear-gradient(180deg,#25306b,#1b264f); box-shadow:0 6px 18px rgba(0,0,0,.25), var(--ring)}
+    .tab{cursor:pointer; padding:10px 18px; border-radius:4px; background:#FFFFFF; border:2px solid #E9ECEF; color:var(--ryanair-blue); font-weight:600; transition:.2s all}
+    .tab:hover{border-color:var(--ryanair-yellow)}
+    .tab.active{color:#FFFFFF; background:var(--ryanair-blue); border-color:var(--ryanair-blue); box-shadow:0 2px 8px var(--shadow)}
 
     .section{display:none}
     .section.active{display:block}
@@ -50,23 +52,36 @@
     @media (max-width:1000px){ .two-col{grid-template-columns:1fr} }
 
     .list{display:grid; gap:12px}
-    .row{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:12px 0; border-bottom:1px dashed #2a356a}
+    .row{display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:12px 0; border-bottom:1px solid #E9ECEF}
     .row:last-child{border-bottom:none}
 
-    .pill{display:inline-block; font-size:12px; padding:4px 10px; border-radius:999px; border:1px solid #2a356a; background:#0f1534; color:var(--ink-dim)}
-    .pill.good{color:var(--good); border-color:#2a5f54}
-    .pill.warn{color:var(--warn); border-color:#66532a}
-    .pill.bad{color:var(--bad); border-color:#6a2a2a}
+    .pill{display:inline-block; font-size:11px; padding:4px 12px; border-radius:4px; border:1px solid #DEE2E6; background:#F8F9FA; color:var(--ryanair-blue); font-weight:600; text-transform:uppercase; letter-spacing:0.3px}
+    .pill.good{color:#FFFFFF; background:var(--good); border-color:var(--good)}
+    .pill.warn{color:#000; background:var(--warn); border-color:var(--warn)}
+    .pill.bad{color:#FFFFFF; background:var(--bad); border-color:var(--bad)}
 
     table{width:100%; border-collapse:collapse; border-spacing:0}
-    th, td{padding:12px; text-align:left; border-bottom:1px solid #223060}
-    th{font-size:12px; color:var(--ink-dim); font-weight:600}
+    th, td{padding:14px 12px; text-align:left; border-bottom:1px solid #E9ECEF}
+    th{font-size:11px; color:var(--ryanair-blue); font-weight:700; text-transform:uppercase; letter-spacing:0.5px; background:#F8F9FA}
+    td{color:var(--ink)}
+    tr:hover{background:#F8F9FA}
 
-    .footer{opacity:.7; font-size:12px; margin:20px 0; color:var(--ink-dim)}
+    .footer{font-size:12px; margin:20px 0; color:var(--ink-dim)}
 
-    .switch{position:relative; width:48px; height:28px; background:#223060; border-radius:20px; border:1px solid #2a356a; cursor:pointer}
-    .knob{position:absolute; top:3px; left:3px; width:22px; height:22px; background:#eaf0ff; border-radius:999px; box-shadow:0 3px 10px rgba(0,0,0,.3); transition:left .2s}
-    .switch.on .knob{left:23px}
+    .switch{position:relative; width:48px; height:28px; background:#E9ECEF; border-radius:20px; border:2px solid #DEE2E6; cursor:pointer; transition:.2s all}
+    .switch.on{background:var(--ryanair-yellow); border-color:var(--ryanair-yellow)}
+    .knob{position:absolute; top:2px; left:2px; width:22px; height:22px; background:#FFFFFF; border-radius:999px; box-shadow:0 2px 6px rgba(0,0,0,.2); transition:left .2s}
+    .switch.on .knob{left:22px}
+
+    input[type="range"]{
+      width:100%; height:6px; border-radius:3px; background:#E9ECEF; outline:none; -webkit-appearance:none; appearance:none;
+    }
+    input[type="range"]::-webkit-slider-thumb{
+      -webkit-appearance:none; width:20px; height:20px; border-radius:50%; background:var(--ryanair-yellow); cursor:pointer; border:2px solid var(--ryanair-blue);
+    }
+    input[type="range"]::-moz-range-thumb{
+      width:20px; height:20px; border-radius:50%; background:var(--ryanair-yellow); cursor:pointer; border:2px solid var(--ryanair-blue);
+    }
 
     /* Print styles */
     @media print{
@@ -79,7 +94,7 @@
 <body>
   <header aria-label="Top navigation">
     <div class="brand" role="img" aria-label="Ryanair Board Dashboard">
-      <div class="logo"></div>
+      <div class="logo">R</div>
       <div class="title">Ryanair Board BI Dashboard</div>
     </div>
     <div class="controls">
@@ -289,17 +304,17 @@
       const ys = data.map(v=> h - pad - ( (v-min)/(max-min||1) )*(h-2*pad));
       ctx.clearRect(0,0,w,h);
       // grid
-      ctx.globalAlpha = .15; ctx.strokeStyle = '#6f7db3';
+      ctx.globalAlpha = .2; ctx.strokeStyle = '#DEE2E6';
       [0.25,0.5,0.75].forEach(r=>{ctx.beginPath(); ctx.moveTo(pad, h - pad - r*(h-2*pad)); ctx.lineTo(w-pad, h - pad - r*(h-2*pad)); ctx.stroke();});
       // line
-      ctx.globalAlpha = 1; ctx.lineWidth = 3*devicePixelRatio; ctx.strokeStyle = dir==='up'? '#20c997':'#ff6b6b';
+      ctx.globalAlpha = 1; ctx.lineWidth = 3*devicePixelRatio; ctx.strokeStyle = dir==='up'? '#28A745':'#DC3545';
       ctx.beginPath(); ctx.moveTo(xs[0], ys[0]);
       for(let i=1;i<xs.length;i++){ ctx.lineTo(xs[i], ys[i]); }
       ctx.stroke();
       // fill
       const grad = ctx.createLinearGradient(0,0,0,h);
-      grad.addColorStop(0, (dir==='up')? 'rgba(32,201,151,.35)':'rgba(255,107,107,.35)');
-      grad.addColorStop(1, 'rgba(17,24,59,0)');
+      grad.addColorStop(0, (dir==='up')? 'rgba(40,167,69,.25)':'rgba(220,53,69,.25)');
+      grad.addColorStop(1, 'rgba(255,255,255,0)');
       ctx.fillStyle = grad; ctx.beginPath();
       ctx.moveTo(xs[0], h-pad); for(let i=0;i<xs.length;i++){ ctx.lineTo(xs[i], ys[i]); }
       ctx.lineTo(xs.at(-1), h-pad); ctx.closePath(); ctx.fill();
@@ -331,14 +346,14 @@
       bars.forEach((v,i)=>{
         const x = pad + i*((w-2*pad)/bars.length) + 6*devicePixelRatio;
         const barH = (v/max) * (h-2*pad);
-        ctx.fillStyle = '#4b8bff';
+        ctx.fillStyle = '#F1C933';
         ctx.fillRect(x, h-pad-barH, bw, barH);
-        ctx.fillStyle = '#aabbdd'; ctx.font = `${12*devicePixelRatio}px ${getComputedStyle(document.body).fontFamily}`;
-        ctx.globalAlpha = .9; ctx.fillText(`${v}%`, x, h-pad-barH-6*devicePixelRatio);
+        ctx.fillStyle = '#073590'; ctx.font = `${12*devicePixelRatio}px ${getComputedStyle(document.body).fontFamily}`;
+        ctx.globalAlpha = 1; ctx.fillText(`${v}%`, x, h-pad-barH-6*devicePixelRatio);
         ctx.globalAlpha = 1;
       });
       // axis line
-      ctx.strokeStyle = '#2a356a'; ctx.beginPath(); ctx.moveTo(pad, h-pad); ctx.lineTo(w-pad, h-pad); ctx.stroke();
+      ctx.strokeStyle = '#DEE2E6'; ctx.beginPath(); ctx.moveTo(pad, h-pad); ctx.lineTo(w-pad, h-pad); ctx.stroke();
     }
 
     function renderDecisions(){
