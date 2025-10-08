@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Final Project Submission - Business Intelligence</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 0.75in;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Calibri', 'Arial', sans-serif;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 0.75in;
+            background: white;
+            color: #000;
+            font-size: 11pt;
+            line-height: 1.4;
+        }
+
+        .nci-header {
+            text-align: center;
+            border-bottom: 3px solid #003366;
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+
+        .nci-logo-text {
+            font-size: 18pt;
+            font-weight: bold;
+            color: #003366;
+            letter-spacing: 0.5px;
+        }
+
+        .nci-subtitle {
+            font-size: 9pt;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        .document-title {
+            text-align: center;
+            margin: 12px 0;
+            padding: 10px;
+            background: #f5f5f5;
+            border-left: 4px solid #003366;
+        }
+
+        .document-title h1 {
+            font-size: 14pt;
+            color: #003366;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .document-title h2 {
+            font-size: 11pt;
+            color: #333;
+            font-weight: normal;
+        }
+
+        .student-details {
+            margin: 12px 0;
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: #fafafa;
+        }
+
+        .detail-row {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            margin-bottom: 5px;
+            font-size: 10pt;
+        }
+
+        .detail-label {
+            font-weight: bold;
+            color: #003366;
+        }
+
+        .detail-value {
+            color: #333;
+        }
+
+        .section-header {
+            font-size: 10pt;
+            font-weight: bold;
+            color: #003366;
+            margin: 12px 0 6px 0;
+            padding-bottom: 3px;
+            border-bottom: 2px solid #003366;
+        }
+
+        .urls {
+            margin: 8px 0;
+            padding: 8px;
+            background: #f0f7ff;
+            border-left: 3px solid #0066cc;
+            font-size: 9pt;
+        }
+
+        .url-item {
+            margin: 4px 0;
+        }
+
+        .url-label {
+            font-weight: bold;
+            color: #003366;
+            display: inline-block;
+            min-width: 110px;
+        }
+
+        .url-link {
+            color: #0066cc;
+            text-decoration: none;
+            word-break: break-all;
+        }
+
+        .screenshot-container {
+            margin: 10px 0;
+            border: 2px dashed #ccc;
+            padding: 10px;
+            text-align: center;
+            background: #fafafa;
+            min-height: 220px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screenshot-placeholder {
+            color: #999;
+            font-size: 9pt;
+            font-style: italic;
+        }
+
+        .screenshot-container img {
+            max-width: 100%;
+            height: auto;
+            max-height: 200px;
+        }
+
+        .abstract {
+            margin: 10px 0;
+        }
+
+        .abstract p {
+            text-align: justify;
+            margin: 0;
+            line-height: 1.5;
+            font-size: 10pt;
+            color: #222;
+        }
+
+        .footer {
+            margin-top: 12px;
+            padding-top: 8px;
+            border-top: 1px solid #ddd;
+            text-align: center;
+            font-size: 8pt;
+            color: #666;
+        }
+
+        .lecturer-section {
+            margin-top: 10px;
+            padding: 6px;
+            background: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            font-size: 9pt;
+        }
+
+        @media print {
+            body {
+                padding: 0.5in;
+            }
+            .screenshot-placeholder {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- NCI Header -->
+    <div class="nci-header">
+        <div class="nci-logo-text">NATIONAL COLLEGE OF IRELAND</div>
+        <div class="nci-subtitle">School of Computing</div>
+    </div>
+
+    <!-- Document Title -->
+    <div class="document-title">
+        <h1>BUSINESS INTELLIGENCE</h1>
+        <h2>Final Project Submission</h2>
+    </div>
+
+    <!-- Student Details -->
+    <div class="student-details">
+        <div class="detail-row">
+            <span class="detail-label">Student Name:</span>
+            <span class="detail-value">Joe Bloggs</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Student Number:</span>
+            <span class="detail-value">x20123456</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Programme:</span>
+            <span class="detail-value">MSc in Enterprise Computing (Data Analytics)</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Module:</span>
+            <span class="detail-value">Business Intelligence (MSCENT-JAN25)</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Assignment:</span>
+            <span class="detail-value">Final Project - Entrepreneurial Data-Driven Decision Making</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">Submission Date:</span>
+            <span class="detail-value">20 October 2025</span>
+        </div>
+    </div>
+
+    <!-- Lecturer Details -->
+    <div class="lecturer-section">
+        <div class="detail-row">
+            <span class="detail-label">Module Lecturer:</span>
+            <span class="detail-value">Victor del Rosal</span>
+        </div>
+    </div>
+
+    <!-- Project URLs -->
+    <div class="section-header">Project Links</div>
+    <div class="urls">
+        <div class="url-item">
+            <span class="url-label">GitHub Pages:</span>
+            <a href="https://joebloggs.github.io/ryanair-bi-dashboard" class="url-link">https://joebloggs.github.io/ryanair-bi-dashboard</a>
+        </div>
+        <div class="url-item">
+            <span class="url-label">GitHub Repository:</span>
+            <a href="https://github.com/joebloggs/ryanair-bi-dashboard" class="url-link">https://github.com/joebloggs/ryanair-bi-dashboard</a>
+        </div>
+    </div>
+
+    <!-- Screenshot Section -->
+    <div class="section-header">Website Homepage Screenshot</div>
+    <div class="screenshot-container">
+        <div class="screenshot-placeholder">
+            [INSERT SCREENSHOT OF RYANAIR BI DASHBOARD HOMEPAGE HERE]<br>
+            Recommended: Full-page screenshot showing Executive Overview with KPIs and charts
+        </div>
+        <!-- When inserting actual screenshot, replace the div above with: -->
+        <!-- <img src="screenshot.png" alt="Ryanair BI Dashboard Homepage"> -->
+    </div>
+
+    <!-- Abstract -->
+    <div class="section-header">Abstract</div>
+    <div class="abstract">
+        <p>
+            This project delivers a comprehensive Business Intelligence dashboard for Ryanair's board-level decision-making,
+            analyzing airline operational and financial performance using publicly available data. The dashboard synthesizes
+            key performance indicators including yield management (+21% average fare increase in Q1 FY2026), load factor
+            optimization (95%), fuel hedging strategy (85% hedged at $76/bbl), and network profitability analysis across
+            2,400+ routes. Using data from Ryanair's quarterly earnings reports, regulatory filings, and industry benchmarks,
+            the analysis reveals five critical insights: (1) profit rebound driven by yield strength (€820M Q1 profit, +128% YoY),
+            (2) cost leadership secured through fuel hedging, (3) geographic concentration with Italy, Spain, and UK generating
+            >50% revenue, (4) strategic network optimization cutting low-margin markets, and (5) competitive advantages from
+            rivals' operational challenges. The interactive dashboard enables scenario planning, risk assessment, and
+            data-driven strategic decisions. Technologies used include JavaScript for visualizations (Canvas API), HTML/CSS
+            for responsive design, and GitHub Pages for deployment. The project demonstrates how business intelligence
+            transforms raw airline data into actionable board-level insights supporting profit maximization and strategic growth.
+        </p>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        National College of Ireland | MSc in Enterprise Computing | Business Intelligence Module<br>
+        Submitted in partial fulfilment of the requirements for the MSc in Enterprise Computing
+    </div>
+</body>
+</html>
